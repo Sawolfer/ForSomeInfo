@@ -7,6 +7,7 @@ import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from PIL import Image
+from pyvirtualdisplay import Display
 
 
 
@@ -14,24 +15,30 @@ def parse_weather():
     print("Please enter the name of town")
     town = str(input())
     
+    # display = Display(visible=0, size=(800, 600))
+    # display.start()
+    
     src = "https://yandex.ru/pogoda/" + town
     req = requests.get(src)
     # print(req.status_code)
-    driver = webdriver.Chrome()
+    options = webdriver.ChromeOptions()
+    options.add_argument("headless")
+    driver = webdriver.Chrome(options=options)
     driver.get(src)
     weather = driver.find_element(By.CLASS_NAME, "temp__value_with-unit")
     
     directory_path = os.path.dirname(__file__)
     # print(directory_path)
-    driver.save_screenshot(os.path.join(directory_path, 'wether.png'))
-    # driver.quit()
+    driver.save_screenshot(os.path.join(directory_path, 'weather.png'))
     
     image = Image.open(os.path.join(directory_path, 'weather.png'))
-    image = image.crop((25, 140, 600, 440))
+    image = image.crop(25, 140, 455, 440)
     image.show()
     print(weather.text)
     print(f"Source: {src}")
     
+    driver.quit()
+    # display.stop()
 
 def device_info():
     hostname = socket.gethostname()
