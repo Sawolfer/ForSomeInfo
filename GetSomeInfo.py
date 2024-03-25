@@ -1,4 +1,6 @@
 import psutil
+import os 
+
 import socket
 import requests
 
@@ -14,14 +16,17 @@ def parse_weather():
     
     src = "https://yandex.ru/pogoda/" + town
     req = requests.get(src)
-    print(req.status_code)
+    # print(req.status_code)
     driver = webdriver.Chrome()
     driver.get(src)
     weather = driver.find_element(By.CLASS_NAME, "temp__value_with-unit")
-    driver.save_screenshot('D:\screenshot.png')
+    
+    directory_path = os.path.dirname(__file__)
+    # print(directory_path)
+    driver.save_screenshot(os.path.join(directory_path, 'wether.png'))
     # driver.quit()
     
-    image = Image.open('D:\screenshot.png')
+    image = Image.open(os.path.join(directory_path, 'weather.png'))
     image = image.crop((25, 140, 600, 440))
     image.show()
     print(weather.text)
@@ -57,7 +62,7 @@ def main():
                 output = i + " : " +  commands.get(i)
                 print(output)
             
-        elif (command == "break"):
+        elif (command == "close"):
             flag = False
         # else:
         #     print("None")
@@ -65,4 +70,5 @@ def main():
         print("\n")
 
 if __name__ == "__main__":
+    
     main()
